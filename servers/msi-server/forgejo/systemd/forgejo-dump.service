@@ -1,0 +1,11 @@
+[Unit]
+Description=Forgejo dump to /srv/forgejo/dumps
+Requires=docker.service
+After=docker.service
+
+[Service]
+Type=oneshot
+# thai is in the docker group; systemd applies supplementary groups for User=
+User=thai
+Group=thai
+ExecStart=/srv/forgejo/forgejo-dump.sh

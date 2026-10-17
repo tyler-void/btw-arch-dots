@@ -1,0 +1,293 @@
+/* Forgejo 15: Enhalation (Mocha). Served from the stack's custom/public, see docs/forgejo.md.
+ *
+ * Forgejo's dark theme is one :root block of variables plus a few component patches,
+ * and almost every surface points into its --steel-* ramp. So: import it, remap the
+ * ramp onto Enhalation's grounds, override the colour families, and patch only the
+ * rules that put white text on a colour fill (pastel fills take dark text here, as
+ * on-accent and on-halo do everywhere else). Variables a future Forgejo adds fall
+ * back to the dark theme instead of breaking.
+ */
+@import url("./theme-forgejo-dark.css");
+
+:root {
+  /* ── grounds: the steel ramp, darkest (900) to lightest (100) ─────────── */
+  --steel-900: {{ground-deep}};       /* nav, footer */
+  --steel-850: {{ground-sunken}};     /* repo header, inline code */
+  --steel-800: {{ground}};            /* page */
+  --steel-750: {{clay-hi}};           /* box bodies, code view: clay, pushed up */
+  --steel-700: {{pill-solid}};        /* box headers, menus, cards */
+  --steel-650: {{ctp-surface0}};
+  --steel-600: {{ctp-surface1}};      /* hover, buttons, neutral labels */
+  --steel-550: {{ctp-surface2}};
+  --steel-500: {{ctp-overlay0}};
+  --steel-450: {{ctp-overlay1}};
+  --steel-400: {{ctp-overlay1}};
+  --steel-350: {{ctp-overlay2}};
+  --steel-300: {{ctp-overlay2}};
+  --steel-250: {{ctp-subtext0}};
+  --steel-200: {{ctp-subtext0}};      /* text-light-2/3, placeholders */
+  --steel-150: {{ctp-subtext1}};      /* text-light */
+  --steel-100: {{ink}};               /* text */
+
+  /* ── text ─────────────────────────────────────────────────────────────── */
+  --color-text-dark: {{ink}};
+  --color-text-focus: {{ink}};
+  --color-caret: {{accent}};
+  --color-grey: {{ink-muted}};        /* timestamps and metadata are grey text: ink-muted, not a 3:1 grey */
+  --color-grey-light: {{ctp-subtext1}};
+  --color-label-text: {{ink}};
+  --color-selection-bg: {{accent}};
+  --color-selection-fg: {{on-accent}};
+
+  /* ── edges: decorative hairlines are line, field edges line-strong ───── */
+  --color-secondary: {{line}};
+  --color-secondary-alpha-10: {{line}}19;
+  --color-secondary-alpha-20: {{line}}33;
+  --color-secondary-alpha-30: {{line}}4b;
+  --color-secondary-alpha-40: {{line}}66;
+  --color-secondary-alpha-50: {{line}}80;
+  --color-secondary-alpha-60: {{line}}99;
+  --color-secondary-alpha-70: {{line}}b3;
+  --color-secondary-alpha-80: {{line}}cc;
+  --color-secondary-alpha-90: {{line}}e1;
+  --color-input-background: {{ground-sunken}};   /* fields are wells, pressed into the ground */
+  --color-input-toggle-background: {{ctp-surface0}};
+  --color-input-border: {{line-strong}};
+  --color-input-border-hover: {{thumb}};
+  --color-light-border: {{glass-edge}};
+
+  /* ── accent: the violet bleed. In Forgejo's dark scale "dark-N" is lighter ── */
+  --color-primary: {{accent}};
+  --color-primary-contrast: {{on-accent}};
+  --color-primary-dark-1: color-mix(in oklab, {{accent}} 85%, {{ink}});
+  --color-primary-dark-2: color-mix(in oklab, {{accent}} 75%, {{ink}});
+  --color-primary-dark-3: color-mix(in oklab, {{accent}} 65%, {{ink}});
+  --color-primary-dark-4: color-mix(in oklab, {{accent}} 55%, {{ink}});
+  --color-primary-dark-5: color-mix(in oklab, {{accent}} 45%, {{ink}});
+  --color-primary-dark-6: color-mix(in oklab, {{accent}} 35%, {{ink}});
+  --color-primary-dark-7: color-mix(in oklab, {{accent}} 25%, {{ink}});
+  --color-primary-light-1: color-mix(in oklab, {{accent}} 88%, {{ground}});
+  --color-primary-light-2: color-mix(in oklab, {{accent}} 76%, {{ground}});
+  --color-primary-light-3: color-mix(in oklab, {{accent}} 64%, {{ground}});
+  --color-primary-light-4: color-mix(in oklab, {{accent}} 52%, {{ground}});
+  --color-primary-light-5: color-mix(in oklab, {{accent}} 40%, {{ground}});
+  --color-primary-light-6: color-mix(in oklab, {{accent}} 30%, {{ground}});
+  --color-primary-light-7: color-mix(in oklab, {{accent}} 20%, {{ground}});
+  --color-primary-alpha-10: {{accent}}19;
+  --color-primary-alpha-20: {{accent}}33;
+  --color-primary-alpha-30: {{accent}}4b;
+  --color-primary-alpha-40: {{accent}}66;
+  --color-primary-alpha-50: {{accent}}80;
+  --color-primary-alpha-60: {{accent}}99;
+  --color-primary-alpha-70: {{accent}}b3;
+  --color-primary-alpha-80: {{accent}}cc;
+  --color-primary-alpha-90: {{accent}}e1;
+  --color-accent: {{accent}};
+  --color-small-accent: color-mix(in oklab, {{accent}} 40%, {{ground}});
+  --color-highlight-fg: {{accent-ink}};
+  --color-highlight-bg: {{accent}}33;
+  --color-reaction-bg: {{pill}};
+
+  /* ── colour families: Catppuccin, so label colours read as one palette ── */
+  --color-red: {{ctp-red}};
+  --color-red-light: {{ctp-maroon}};
+  --color-red-dark-1: color-mix(in oklab, {{ctp-red}} 85%, {{ground}});
+  --color-red-dark-2: color-mix(in oklab, {{ctp-red}} 75%, {{ground}});
+  --color-red-badge: {{ctp-red}};
+  --color-red-badge-bg: {{ctp-red}}22;
+  --color-red-badge-hover-bg: {{ctp-red}}44;
+  --color-orange: {{ctp-peach}};
+  --color-orange-light: {{ctp-peach}};
+  --color-orange-dark-1: color-mix(in oklab, {{ctp-peach}} 85%, {{ground}});
+  --color-orange-dark-2: color-mix(in oklab, {{ctp-peach}} 75%, {{ground}});
+  --color-orange-badge: {{ctp-peach}};
+  --color-orange-badge-bg: {{ctp-peach}}22;
+  --color-orange-badge-hover-bg: {{ctp-peach}}44;
+  --color-yellow: {{ctp-yellow}};
+  --color-yellow-light: {{ctp-yellow}};
+  --color-yellow-dark-1: color-mix(in oklab, {{ctp-yellow}} 85%, {{ground}});
+  --color-yellow-dark-2: color-mix(in oklab, {{ctp-yellow}} 75%, {{ground}});
+  --color-yellow-badge: {{ctp-yellow}};
+  --color-yellow-badge-bg: {{ctp-yellow}}22;
+  --color-yellow-badge-hover-bg: {{ctp-yellow}}44;
+  --color-olive: color-mix(in oklab, {{ctp-green}} 60%, {{ctp-yellow}});
+  --color-olive-light: color-mix(in oklab, {{ctp-green}} 60%, {{ctp-yellow}});
+  --color-olive-dark-1: color-mix(in oklab, {{ctp-green}} 50%, {{ground}});
+  --color-olive-dark-2: color-mix(in oklab, {{ctp-green}} 40%, {{ground}});
+  --color-green: {{ctp-green}};
+  --color-green-light: {{ctp-green}};
+  --color-green-dark-1: color-mix(in oklab, {{ctp-green}} 85%, {{ground}});
+  --color-green-dark-2: color-mix(in oklab, {{ctp-green}} 75%, {{ground}});
+  --color-green-badge: {{ctp-green}};
+  --color-green-badge-bg: {{ctp-green}}22;
+  --color-green-badge-hover-bg: {{ctp-green}}44;
+  --color-teal: {{ctp-teal}};
+  --color-teal-light: {{ctp-teal}};
+  --color-teal-dark-1: color-mix(in oklab, {{ctp-teal}} 85%, {{ground}});
+  --color-teal-dark-2: color-mix(in oklab, {{ctp-teal}} 75%, {{ground}});
+  --color-blue: {{ctp-blue}};
+  --color-blue-light: {{ctp-sapphire}};
+  --color-blue-dark-1: color-mix(in oklab, {{ctp-blue}} 85%, {{ground}});
+  --color-blue-dark-2: color-mix(in oklab, {{ctp-blue}} 75%, {{ground}});
+  --color-violet: {{ctp-lavender}};
+  --color-violet-light: {{ctp-lavender}};
+  --color-violet-dark-1: color-mix(in oklab, {{ctp-lavender}} 85%, {{ground}});
+  --color-violet-dark-2: color-mix(in oklab, {{ctp-lavender}} 75%, {{ground}});
+  --color-purple: {{ctp-mauve}};
+  --color-purple-light: {{ctp-mauve}};
+  --color-purple-dark-1: color-mix(in oklab, {{ctp-mauve}} 85%, {{ground}});
+  --color-purple-dark-2: color-mix(in oklab, {{ctp-mauve}} 75%, {{ground}});
+  --color-pink: {{ctp-pink}};
+  --color-pink-light: {{ctp-pink}};
+  --color-pink-dark-1: color-mix(in oklab, {{ctp-pink}} 85%, {{ground}});
+  --color-pink-dark-2: color-mix(in oklab, {{ctp-pink}} 75%, {{ground}});
+  --color-brown: {{ctp-flamingo}};
+  --color-brown-light: {{ctp-flamingo}};
+  --color-brown-dark-1: color-mix(in oklab, {{ctp-flamingo}} 85%, {{ground}});
+  --color-brown-dark-2: color-mix(in oklab, {{ctp-flamingo}} 75%, {{ground}});
+  --color-black: {{ground-deep}};
+  --color-black-light: {{ctp-surface0}};
+  --color-black-dark-1: {{ground-deep}};
+  --color-black-dark-2: {{ground-deep}};
+  --color-gold: {{ctp-yellow}};
+
+  /* ── messages and diffs: the *-soft tints over ground, ink on top ─────── */
+  --color-error-bg: {{danger-soft}};
+  --color-error-bg-hover: {{ctp-red}}33;
+  --color-error-bg-active: {{ctp-red}}44;
+  --color-error-border: {{danger-rim}};
+  --color-error-text: {{ink}};
+  --color-success-bg: {{success-soft}};
+  --color-success-border: {{ctp-green}}66;
+  --color-success-text: {{ink}};
+  --color-warning-bg: {{warning-soft}};
+  --color-warning-border: {{ctp-yellow}}66;
+  --color-warning-text: {{ink}};
+  --color-info-bg: {{info-soft}};
+  --color-info-border: {{ctp-blue}}66;
+  --color-info-text: {{ink}};
+  --color-diff-removed-row-bg: {{danger-soft}};
+  --color-diff-removed-row-border: {{danger-rim}};
+  --color-diff-removed-word-bg: {{ctp-red}}4b;
+  --color-diff-added-row-bg: {{success-soft}};
+  --color-diff-added-row-border: {{ctp-green}}66;
+  --color-diff-added-word-bg: {{ctp-green}}4b;
+  --color-diff-moved-row-bg: {{warning-soft}};
+  --color-diff-moved-row-border: {{ctp-yellow}}66;
+  --color-diff-inactive: {{ctp-surface0}};
+
+  /* ── overlays ─────────────────────────────────────────────────────────── */
+  --color-overlay-backdrop: {{scrim}};
+  --color-shadow: {{glass-shade}};
+  --color-tooltip-bg: {{ground-deep}};
+  --color-tooltip-text: {{ink}};
+
+  /* ── Actions logs: a terminal, Catppuccin's ANSI mapping ─────────────── */
+  --color-console-bg: {{ground-deep}};
+  --color-console-fg: {{ink}};
+  --color-console-fg-subtle: {{ink-muted}};
+  --color-console-border: {{line}};
+  --color-console-hover-bg: {{pill}};
+  --color-console-active-bg: {{ctp-surface1}};
+  --color-console-menu-bg: {{ctp-surface0}};
+  --color-console-menu-border: {{line-strong}};
+  --color-ansi-black: {{ctp-surface1}};
+  --color-ansi-red: {{ctp-red}};
+  --color-ansi-green: {{ctp-green}};
+  --color-ansi-yellow: {{ctp-yellow}};
+  --color-ansi-blue: {{ctp-blue}};
+  --color-ansi-magenta: {{ctp-pink}};
+  --color-ansi-cyan: {{ctp-teal}};
+  --color-ansi-white: {{ctp-subtext1}};
+  --color-ansi-bright-black: {{ctp-surface2}};
+  --color-ansi-bright-red: {{ctp-red}};
+  --color-ansi-bright-green: {{ctp-green}};
+  --color-ansi-bright-yellow: {{ctp-yellow}};
+  --color-ansi-bright-blue: {{ctp-blue}};
+  --color-ansi-bright-magenta: {{ctp-pink}};
+  --color-ansi-bright-cyan: {{ctp-teal}};
+  --color-ansi-bright-white: {{ctp-subtext0}};
+
+  /* ── type and shape ───────────────────────────────────────────────────── */
+  --fonts-override: {{font-sans}};
+  --fonts-monospace: {{font-mono}};
+  /* Deviation: Forgejo's controls are 28–32px tall, so radius-sm (12px) is kept
+     for panels and dropdowns and controls get 8px. */
+  --border-radius: 8px;
+  --border-radius-medium: {{radius-sm}};
+}
+
+/* Pastel fills take dark text. Forgejo puts --color-white or the inherited light
+   text on these, about 2:1 on Catppuccin's pastels; on-accent is 4.9:1 or better on
+   every fill and its hover/active shade. The list is every rule in Forgejo 15.0.10's
+   index.css and theme-forgejo-dark.css that paints an opaque colour-family
+   background behind text. Re-scan it after a major Forgejo upgrade (docs/forgejo.md). */
+.ui.ui.ui.red.label, a.ui.ui.ui.red.label:hover, .ui.red.labels .label,
+.ui.ui.ui.orange.label, a.ui.ui.ui.orange.label:hover, .ui.orange.labels .label,
+.ui.ui.ui.yellow.label, a.ui.ui.ui.yellow.label:hover, .ui.yellow.labels .label,
+.ui.ui.ui.green.label, a.ui.ui.ui.green.label:hover, .ui.green.labels .label,
+.ui.ui.ui.teal.label, .ui.teal.labels .label,
+.ui.ui.ui.purple.label, a.ui.ui.ui.purple.label:hover, .ui.purple.labels .label,
+.ui.ui.ui.brown.label, .ui.brown.labels .label,
+.ui.red.button, .ui.orange.button, .ui.yellow.button, .ui.green.button,
+.ui.teal.button, .ui.purple.button, .ui.brown.button,
+.ui.red.buttons .button, .ui.orange.buttons .button, .ui.yellow.buttons .button, .ui.green.buttons .button,
+.ui.teal.buttons .button, .ui.purple.buttons .button, .ui.brown.buttons .button,
+.ui.red.button:hover, .ui.orange.button:hover, .ui.yellow.button:hover, .ui.green.button:hover,
+.ui.teal.button:hover, .ui.purple.button:hover, .ui.brown.button:hover,
+.ui.red.button:focus, .ui.orange.button:focus, .ui.yellow.button:focus, .ui.green.button:focus,
+.ui.teal.button:focus, .ui.purple.button:focus, .ui.brown.button:focus,
+.ui.red.button:active, .ui.orange.button:active, .ui.yellow.button:active, .ui.green.button:active,
+.ui.teal.button:active, .ui.purple.button:active, .ui.brown.button:active,
+.ui.basic.red.button, .ui.basic.red.button:hover, .ui.basic.red.button:focus, .ui.basic.red.button:active,
+.ui.negative.button, .ui.negative.buttons .button, .ui.negative.button:hover, .ui.negative.button:active,
+.ui.positive.button, .ui.positive.buttons .button, .ui.positive.button:hover, .ui.positive.button:active,
+#navbar a.item .notification_count, #navbar a.item .header-stopwatch-dot,
+.repository .diff-detail-box span.status,
+.runner-container .task-status-success, .runner-container .task-status-failure,
+.runner-container .task-status-running, .runner-container .task-status-cancelled,
+.runner-container .task-status-blocked,
+.tw-bg-green, .tw-bg-purple, .tw-bg-red {
+  color: {{on-accent}};
+}
+.CodeMirror-selected {
+  color: {{on-accent}} !important;
+}
+/* The dark theme moves primary labels onto primary-light-3 (!important): 4.4:1 under
+   dark text, 2.9:1 under the light text it gives basic ones. Keep them on the accent. */
+.ui.red.label.notification_count, .ui.primary.label, .ui.primary.labels .label {
+  background-color: {{accent}} !important;
+}
+.ui.basic.labels .primary.label, .ui.ui.ui.basic.primary.label {
+  color: {{on-accent}} !important;
+}
+#review-box .review-comments-counter, #review-box:hover .review-comments-counter {
+  background-color: {{accent}};   /* was primary-light-4/5: 3.4:1 and below */
+  color: {{on-accent}};
+}
+
+/* Syntax highlighting: Catppuccin Mocha's chroma mapping. */
+.chroma .c, .chroma .c1, .chroma .ch, .chroma .cm, .chroma .cs, .chroma .cpf { color: {{ctp-overlay2}}; font-style: italic; }
+.chroma .cp { color: {{ctp-pink}}; }
+.chroma .k, .chroma .kc, .chroma .kd, .chroma .kn, .chroma .kp, .chroma .kr, .chroma .ow { color: {{ctp-mauve}}; }
+.chroma .kt, .chroma .nc, .chroma .nn { color: {{ctp-yellow}}; }
+.chroma .s, .chroma .s1, .chroma .s2, .chroma .sa, .chroma .sb, .chroma .sc, .chroma .dl,
+.chroma .sd, .chroma .sh, .chroma .ss, .chroma .sx, .chroma .ld { color: {{ctp-green}}; }
+.chroma .se, .chroma .si, .chroma .sr { color: {{ctp-pink}}; }
+.chroma .m, .chroma .mb, .chroma .mf, .chroma .mh, .chroma .mi, .chroma .il, .chroma .mo,
+.chroma .no, .chroma .nd { color: {{ctp-peach}}; }
+.chroma .o, .chroma .p { color: {{ctp-sky}}; }
+.chroma .nf, .chroma .fm, .chroma .na, .chroma .py { color: {{ctp-blue}}; }
+.chroma .nb, .chroma .bp, .chroma .ne, .chroma .err, .chroma .gr, .chroma .gt { color: {{ctp-red}}; }
+.chroma .nt { color: {{ctp-mauve}}; }
+.chroma .nv, .chroma .vc, .chroma .vg, .chroma .vi, .chroma .vm { color: {{ctp-flamingo}}; }
+.chroma .nl { color: {{ctp-sapphire}}; }
+.chroma .ni { color: {{ctp-teal}}; }
+.chroma .n, .chroma .nx, .chroma .w { color: {{ink}}; }
+.chroma .gd { color: {{ctp-red}}; background-color: {{danger-soft}}; }
+.chroma .gi { color: {{ctp-green}}; background-color: {{success-soft}}; }
+.chroma .gh { color: {{ctp-blue}}; font-weight: bold; }
+.chroma .gu { color: {{ctp-teal}}; font-weight: bold; }
+.chroma .ge { font-style: italic; }
+.chroma .gs { font-weight: bold; }
+.chroma .go, .chroma .gp { color: {{ctp-overlay2}}; }

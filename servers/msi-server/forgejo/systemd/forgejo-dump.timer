@@ -1,0 +1,11 @@
+[Unit]
+Description=Nightly Forgejo dump
+
+[Timer]
+OnCalendar=*-*-* 03:30
+RandomizedDelaySec=10min
+# If the box was off at 03:30, run at the next boot instead of skipping the day
+Persistent=true
+
+[Install]
+WantedBy=timers.target

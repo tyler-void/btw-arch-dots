@@ -14,6 +14,7 @@ Placeholders: {{token-name}} (a resolved Mocha token or a §2 derived token) and
 """
 import argparse
 import hashlib
+import json
 import os
 import re
 import struct
@@ -26,8 +27,9 @@ import enhalation_ref as ref  # noqa: E402
 
 TEMPLATES = os.path.join(REPO, "theme", "templates")
 
-# template (under theme/templates) -> output (under the repo). The outputs are
-# `link` entries in dots.conf, so writing them changes the running desktop.
+# template (under theme/templates) -> output (under the repo). The home/ outputs are
+# `link` entries in dots.conf, so writing them changes the running desktop. The
+# servers/ output is not: it reaches msi-server only when deployed (docs/forgejo.md).
 OUTPUTS = {
     "rofi/launcher.rasi.in": "home/.config/rofi/config/launcher.rasi",
     "rofi/window-switcher.rasi.in": "home/.config/rofi/config/window-switcher.rasi",
@@ -35,6 +37,7 @@ OUTPUTS = {
     "rofi/clipboard-delete.rasi.in": "home/.config/rofi/config/clipboard-delete.rasi",
     "swaync/style.css.in": "home/.config/swaync/style.css",
     "quickshell/Theme.qml.in": "home/.config/quickshell/enhalation/Theme.qml",
+    "forgejo/theme-enhalation.css.in": "servers/msi-server/forgejo/custom/public/assets/css/theme-enhalation.css",
 }
 # Baked images (enhalation_ref.bake) and where each is written.
 ASSETS = {
@@ -136,6 +139,9 @@ def build():
         sys.exit("gen-theme: contrast gate FAILED — nothing written\n" +
                  "\n".join(f"  {b:6} {s:12} {t:12} {r:5.2f} < {need}" for b, s, _, t, r, need, _ in bad))
     values = {k: str(v) for k, v in {**tok, **der}.items()}
+    # {{font-sans}}, {{font-mono}}, ...: the type.families stacks, verbatim
+    with open(os.path.join(REPO, "theme", "enhalation", "tokens.json"), encoding="utf-8") as f:
+        values.update({f"font-{k}": v for k, v in json.load(f)["type"]["families"].items()})
     texts = {out: render(src, values) for src, out in OUTPUTS.items()}
     baked = ref.bake(tok, der)
     images = {os.path.join(d, name): baked[name] for d, names in ASSETS.items() for name in names}
@@ -159,6 +165,7 @@ def main():
         if current != text:
             stale.append(out)
             if not args.check:
+                os.makedirs(os.path.dirname(path), exist_ok=True)
                 with open(path, "w", encoding="utf-8") as f:
                     f.write(text)
     for out, (w, h, rgba) in images.items():

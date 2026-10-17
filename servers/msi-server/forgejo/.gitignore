@@ -1,0 +1,6 @@
+# Live state and secrets stay on msi-server. This repo is public.
+*.env
+data/
+dumps/
+restore/
+data.before-restore/
