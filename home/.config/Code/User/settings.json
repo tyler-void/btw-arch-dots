@@ -260,5 +260,7 @@
   },
 "terminal.integrated.mouseWheelScrollSensitivity": 3,
 "claudeCode.preferredLocation": "panel",
-"chat.disableAIFeatures": true
+"chat.disableAIFeatures": true,
+"window.commandCenter": false,
+"workbench.layoutControl.enabled": false
 }
