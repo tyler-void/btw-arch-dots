@@ -1,6 +1,6 @@
 # Enhalation — desktop profile (rofi · cliphist picker · swaync)
 
-**Status:** Accepted · **Date:** 2026-09-29 · **Owner:** Tyler (@SvnFrs)
+**Status:** Accepted · **Date:** 2026-09-29 · **Owner:** Tyler (@tyler-void)
 **Source design system:** Enhalation (Mocha), vendored in `theme/enhalation/` — see `SOURCE.md` there.
 **Visual target:** `docs/enhalation-desktop-preview.png` (a browser mock; sample data and app icons are illustrative).
 
@@ -132,7 +132,7 @@ baked `glass-grain.png` change with it (§8.1). The gate still passes and every 
 **DP2 — Type is Cartograph.** `CartographCF Nerd Font` replaces Geist, Geist Mono and Bricolage; its
 italic takes Instrument Serif's flourish role — **only** the chip label. *(corrected 2026-09-29: it
 is no longer vendored in this repo — since 8b423f4 it comes from the private
-`SvnFrs/cartograph-fonts` via `fonts install`. Wherever this brief says "the vendored TTF", read
+`tyler/cartograph-fonts` (git.tyler-void.dev) via `fonts install`. Wherever this brief says "the vendored TTF", read
 the installed file: `fc-match -f '%{file}\n' 'CartographCF Nerd Font'`, today
 `~/.local/share/fonts/cartograph-cf/nerd/CartographCFNerdFont-Regular.otf`, a Nerd Fonts v3.5.1
 build. Never commit a font file.)* Weights available (VERIFIED `fc-query`; re-checked on the v3.5.1

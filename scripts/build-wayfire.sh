@@ -19,7 +19,7 @@ set -euo pipefail
 
 REPO="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
 SRC_ROOT="${HOME}/Documents/Projects"
-WAYFIRE_REMOTE="https://github.com/SvnFrs/wayfire.git"
+WAYFIRE_REMOTE="https://github.com/tyler-void/wayfire.git"
 WAYFIRE_REF="master"
 BUILDTYPE="release"
 DO_INSTALL=1

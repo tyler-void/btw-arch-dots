@@ -1,6 +1,6 @@
 # Capture UI — screenshot overlay and recording island
 
-**Status:** Accepted at C0 (2026-09-29: Quickshell and the PrtSc rebinding confirmed by Tyler) · **Date:** 2026-09-29 · **Owner:** Tyler (@SvnFrs)
+**Status:** Accepted at C0 (2026-09-29: Quickshell and the PrtSc rebinding confirmed by Tyler) · **Date:** 2026-09-29 · **Owner:** Tyler (@tyler-void)
 **Depends on:** `docs/enhalation-desktop.md` (tokens, generator, desktop profile, §3.4 pairing rules).
 **Visual target:** `docs/capture-ui-preview.png` (a browser mock; the desktop behind it is fake).
 

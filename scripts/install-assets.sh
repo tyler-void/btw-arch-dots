@@ -11,9 +11,10 @@
 #   JetBrains Mono Nerd     | in the official repos (ttf-jetbrains-mono-nerd)
 #   Catppuccin-SE icons     | GitHub release, ~30 MB
 #   GoogleDot cursors       | GitHub release, two variants
-#   Cartograph CF, Gelasio  | the PRIVATE fonts repo (SvnFrs/cartograph-fonts):
-#                           | Cartograph is commercial, so it cannot live in
-#                           | this public repo. Needs `gh auth login`.
+#   Cartograph CF, Gelasio  | the PRIVATE fonts repo (tyler/cartograph-fonts on
+#                           | git.tyler-void.dev): Cartograph is commercial, so it
+#                           | cannot live in this public repo. Needs Tailscale up
+#                           | and your SSH key in Forgejo.
 #
 # Still vendored in the repo, because they are NOT re-downloadable:
 #   Graphite-Recolored-* cursors   home/.icons/
@@ -83,12 +84,13 @@ done
 # The fonts repo has its own CLI; `fonts install` links each family into
 # ~/.local/share/fonts, backing up whatever was there.
 FONTS_REPO="${FONTS_REPO:-$HOME/Documents/Projects/cartograph-fonts}"
+FONTS_URL="${FONTS_URL:-ssh://git@msi-server.tail5cea38.ts.net:2222/tyler/cartograph-fonts.git}"
 step "personal fonts: $FONTS_REPO"
 if [[ ! -d $FONTS_REPO/.git ]]; then
-  if command -v gh >/dev/null && gh repo clone SvnFrs/cartograph-fonts "$FONTS_REPO" -- --quiet; then
+  if git clone --quiet "$FONTS_URL" "$FONTS_REPO"; then
     ok "cloned the private fonts repo"
   else
-    warn "could not clone SvnFrs/cartograph-fonts (private) — run \`gh auth login\`, then re-run this script"
+    warn "could not clone $FONTS_URL (private, Forgejo on msi-server) — needs Tailscale up and your SSH key in Forgejo, then re-run this script"
   fi
 fi
 if [[ -x $FONTS_REPO/bin/fonts ]]; then

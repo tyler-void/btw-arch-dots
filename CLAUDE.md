@@ -75,7 +75,7 @@ atomically replacing the symlink:
 
 ### Wayfire is built from source — this is load-bearing
 
-`/usr/local/bin/wayfire`, built from `github.com/SvnFrs/wayfire` (a personal
+`/usr/local/bin/wayfire`, built from `github.com/tyler-void/wayfire` (a personal
 fork) with wlroots as a meson subproject (`use_system_wlroots=disabled`).
 `wayfire.ini` enables **`spread-overview`, which exists only in that fork** — the
 packaged compositor cannot load this config.
@@ -210,7 +210,7 @@ redistributable assets to git; extend `install-assets.sh` instead.
 
 **This repo is public, so fonts do not live here.** Cartograph CF (the VS Code /
 Zed editor font, commercial) and every other personal font live in the
-**private** repo `SvnFrs/cartograph-fonts`, checked out at
+**private** repo `tyler/cartograph-fonts` on git.tyler-void.dev (Forgejo, SSH over Tailscale), checked out at
 `~/Documents/Projects/cartograph-fonts`. It has its own CLI, `fonts` (on PATH
 via `~/.local/bin/fonts`): `fonts add <zip|dir|file> [--nerd]`, `fonts patch`,
 `fonts install`, `fonts doctor`. It links `~/.local/share/fonts/<slug>` into

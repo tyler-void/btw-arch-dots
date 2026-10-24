@@ -125,7 +125,7 @@ Install Arch first — [`docs/installation.md`](docs/installation.md) covers the
 disk layout and GRUB setup this machine actually uses. Then:
 
 ```sh
-git clone https://github.com/SvnFrs/btw-arch-dots.git ~/dots
+git clone https://github.com/tyler-void/btw-arch-dots.git ~/dots
 cd ~/dots
 ./scripts/bootstrap.sh          # packages, yay, oh-my-zsh, fonts, symlinks, services
 ./scripts/build-wayfire.sh      # the compositor — see below, this is not optional
@@ -134,7 +134,7 @@ cd ~/dots
 
 > **Wayfire is built from source here, not installed from a package.**
 > `wayfire.ini` enables `spread-overview`, which exists only in
-> [`SvnFrs/wayfire`](https://github.com/SvnFrs/wayfire). The packaged compositor
+> [`tyler-void/wayfire`](https://github.com/tyler-void/wayfire). The packaged compositor
 > cannot load this config. `scripts/build-wayfire.sh` reproduces the build into
 > `/usr/local`, wlroots included as a meson subproject.
 > Details in [`docs/wayfire-build.md`](docs/wayfire-build.md).
@@ -175,7 +175,7 @@ For `link` entries there is nothing to pull or push — edit the file, then comm
 | | why |
 |---|---|
 | JetBrains Mono Nerd, Catppuccin-SE icons, GoogleDot cursors | freely re-downloadable — `scripts/install-assets.sh` |
-| Cartograph CF (the VS Code / Zed editor font), Gelasio | Cartograph is commercial, so it lives in the private fonts repo (`SvnFrs/cartograph-fonts`, with its own `fonts` CLI). `scripts/install-assets.sh` clones and installs it |
+| Cartograph CF (the VS Code / Zed editor font), Gelasio | Cartograph is commercial, so it lives in the private fonts repo (`tyler/cartograph-fonts` on git.tyler-void.dev, with its own `fonts` CLI). `scripts/install-assets.sh` clones and installs it |
 | `~/.config/pipewire/*.conf` | vendoring the distro defaults means silently running a stale copy after every PipeWire update. Only `*.conf.d/` drop-ins are tracked |
 | ranger `rc.conf`, `commands.py`, `commands_full.py` | byte-identical to the shipped defaults |
 | `~/.gitconfig` | carries work credential helpers and a work email. `~/.config/git/ignore` is tracked; identity stays machine-local |

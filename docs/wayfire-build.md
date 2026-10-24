@@ -10,7 +10,7 @@ the `wayfire` package and the compositor starts without it.
 binary   /usr/local/bin/wayfire
 version  0.12.0  (master, built against wlroots-0.20.2), buildtype=release
 plugins  /usr/local/lib/wayfire/          72 .so files
-source   https://github.com/SvnFrs/wayfire.git   branch master
+source   https://github.com/tyler-void/wayfire.git   branch master
 tree     ~/Documents/Projects/wayfire
 ```
 
@@ -79,7 +79,7 @@ build tree is ever left on debug again.
 
 ## The fork
 
-`~/Documents/Projects/wayfire` tracks `SvnFrs/wayfire`, which carries the
+`~/Documents/Projects/wayfire` tracks `tyler-void/wayfire`, which carries the
 `spread-overview` work (see `specs/001-spread-overview/` in that tree).
 `~/Documents/Projects/wayfire-plugins-extra` tracks upstream `WayfireWM`, and
 `~/Documents/Clones/wayfire-plugins-extra` is a second checkout of a personal

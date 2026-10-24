@@ -1,6 +1,6 @@
 # Enhalation — vendored source
 
-Enhalation is Tyler's (@SvnFrs) design system, built on Catppuccin Mocha/Latte.
+Enhalation is Tyler's (@tyler-void) design system, built on Catppuccin Mocha/Latte.
 Source: https://claude.ai/artifact/YQeQn8cAmhCQjManUjFxTn (private artifact) · vendored 2026-09-29.
 
 | File | Origin | Edit? |

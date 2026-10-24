@@ -2,7 +2,7 @@
 # Verified against the configs in home/, not copied from a blog post.
 
 # compositor — NOT installed from a package.
-# Wayfire here is built from github.com/SvnFrs/wayfire into /usr/local, because
+# Wayfire here is built from github.com/tyler-void/wayfire into /usr/local, because
 # the config uses `spread-overview`, which only exists in that fork. Installing
 # the `wayfire` / `wayfire-plugins-extra` / `wlroots0.19` packages gives you a
 # DIFFERENT compositor that cannot load this config.

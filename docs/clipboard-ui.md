@@ -1,6 +1,6 @@
 # Clipboard panel — cliphist in Quickshell
 
-**Status:** Built, K0–K4 (2026-09-30) · **Date:** 2026-09-29 · **Owner:** Tyler (@SvnFrs)
+**Status:** Built, K0–K4 (2026-09-30) · **Date:** 2026-09-29 · **Owner:** Tyler (@tyler-void)
 **Depends on:** `docs/enhalation-desktop.md` (tokens, desktop profile, §3.4 pairing rules) and
 `docs/capture-ui.md` (the `enhalation` Quickshell config, `Theme.qml`, `GlassPanel.qml`).
 **Visual target:** `docs/clipboard-ui-preview.png` (a browser mock; the clip data is invented).

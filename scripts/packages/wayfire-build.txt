@@ -1,7 +1,7 @@
 # Build dependencies for compiling Wayfire from source.
 #
 # Wayfire on this machine is NOT the packaged one — see docs/wayfire-build.md.
-# It is built from github.com/SvnFrs/wayfire (a personal fork carrying the
+# It is built from github.com/tyler-void/wayfire (a personal fork carrying the
 # spread-overview plugin) and installed into /usr/local.
 #
 # Derived from the build tree's own meson dependency list, not guessed.

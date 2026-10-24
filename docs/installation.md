@@ -118,7 +118,7 @@ Log in as your user, then:
 
 ```sh
 sudo pacman -S --needed git
-git clone https://github.com/SvnFrs/btw-arch-dots.git ~/dots
+git clone https://github.com/tyler-void/btw-arch-dots.git ~/dots
 cd ~/dots
 ./scripts/bootstrap.sh
 ./bin/dots doctor
