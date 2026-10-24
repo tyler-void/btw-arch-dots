@@ -1,0 +1,44 @@
+# Locally patched rebuild of Arch's swaync 0.12.6-1 (two crash fixes, see prepare()).
+#   build + install:  cd pkgbuilds/swaync && makepkg -sri
+# pkgrel 1.1 sorts above the repo's 0.12.6-1, so `pacman -Syu` keeps this build
+# until Arch ships any newer swaync package (even a 0.12.6-2 rebuild), which
+# silently brings the crashes back. Drop this directory once an upstream release
+# contains both fixes; rebuild it if a newer swaync still lacks them.
+# Original maintainer: Robin Candau <antiz@archlinux.org>
+# Contributor: Erik Reider <erik.reider@protonmail.com>
+
+pkgname=swaync
+_pkgname=SwayNotificationCenter
+pkgver=0.12.6
+pkgrel=1.1
+pkgdesc="A simple GTK based notification daemon for Sway"
+url="https://github.com/ErikReider/SwayNotificationCenter"
+arch=('x86_64')
+license=('GPL-3.0-only')
+depends=('gtk4' 'gtk4-layer-shell' 'libadwaita' 'glib2' 'libgee' 'json-glib' 'libpulse' 'granite7')
+makedepends=('vala' 'meson' 'git' 'scdoc' 'sassc' 'gobject-introspection' 'blueprint-compiler')
+optdepends=('gvfs: Get album art in MPRIS widget')
+source=("${_pkgname}-${pkgver}.tar.gz::${url}/archive/v${pkgver}.tar.gz"
+        "0001-reveal-idle.patch"
+        "0002-volume-operations-uaf.patch")
+sha256sums=('0c844eb5c9524f924495bd4145e5db575096de36f3ec87fb37e4c1ed6eacb897'
+            'e783ec9fd1c32891daebd3c5caff806bdafd2fc639c6ab63716352c81452cf9c'
+            '75419f181180277cbc7ad64185bebf87ff8b2585eab3d2986cf87fde9ba5f8a4')
+
+prepare() {
+	cd "${_pkgname}-${pkgver}"
+	# Upstream PR #767: CloseNotification before the reveal idle ran -> segfault in gtk_revealer_set_reveal_child
+	patch -Np1 -i ../0001-reveal-idle.patch
+	# Local fix: volume_operations nodes removed inside Gee foreach -> segfault in gee_linked_list_real_foreach
+	patch -Np1 -i ../0002-volume-operations-uaf.patch
+}
+
+build() {
+	arch-meson "${_pkgname}-${pkgver}" build -Dscripting=true
+	ninja -C build
+}
+
+package() {
+	DESTDIR="${pkgdir}" ninja -C build install
+	install -Dm 644 "${_pkgname}-${pkgver}/README.md" "${pkgdir}/usr/share/doc/${pkgname}/README.md"
+}

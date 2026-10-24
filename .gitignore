@@ -18,6 +18,10 @@ home/.icons/GoogleDot-White/
 home/.local/share/fonts/.uuid
 **/__pycache__/
 *.pyc
+pkgbuilds/*/src/
+pkgbuilds/*/pkg/
+pkgbuilds/*/*.tar.gz
+pkgbuilds/*/*.pkg.tar.zst
 
 # dots: files replaced by `dots link` are parked here, never committed
 .backups/

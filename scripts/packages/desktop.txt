@@ -12,15 +12,14 @@ xorg-xwayland
 
 # session plumbing
 polkit-gnome              # wayfire.ini [autostart] polkit-agent
-gnome-keyring
-seahorse
+gnome-keyring             # wayfire.ini [autostart] keyring. Install explicitly: nothing else depends on it
 xdg-desktop-portal-wlr    # screencast; ss-fix.sh restarts it after login
 xdg-desktop-portal-gtk
 
 # shell surface
 kitty
 rofi
-swaync                    # notification daemon (replaced mako)
+swaync                    # notification daemon (replaced mako); then rebuild from pkgbuilds/swaync
 wlogout
 nautilus
 awww                      # wallpaper daemon

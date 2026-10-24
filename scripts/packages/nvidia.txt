@@ -7,7 +7,6 @@ nvidia-open-dkms
 nvidia-utils
 lib32-nvidia-utils
 nvidia-prime              # provides prime-run; the `nvidia-run` alias in .zshrc does the same by hand
-nvidia-settings
 opencl-nvidia
 cuda
 

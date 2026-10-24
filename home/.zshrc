@@ -63,9 +63,6 @@ alias code="code --ozone-platform=wayland"
 alias nvidia-run="__NV_PRIME_RENDER_OFFLOAD=1 __GLX_VENDOR_LIBRARY_NAME=nvidia"
 alias bitwarden="cat ~/Documents/Secrets/bitwarden | wl-copy"
 
-# ── thefuck — lazy (loads on first `fuck`; saves ~200ms at startup) ──
-fuck() { unfunction fuck; eval "$(thefuck --alias)"; fuck "$@"; }
-
 # ── nvm — lazy (loads on first node/npm/npx/nvm; you mostly use bun) ─
 if [[ -f /usr/share/nvm/init-nvm.sh ]]; then
   _load_nvm() { unfunction nvm node npm npx 2>/dev/null; source /usr/share/nvm/init-nvm.sh; }

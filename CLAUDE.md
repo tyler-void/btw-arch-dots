@@ -112,8 +112,9 @@ Intel and the 3060 is an offload device (`prime-run`, or the `nvidia-run` alias)
 **Do not add `GBM_BACKEND=nvidia-drm` / `WLR_DRM_DEVICES`** — they buy nothing
 here and cost battery. Details in [`docs/hardware.md`](docs/hardware.md).
 
-Root is on the **second** NVMe (`nvme1n1p2`); `nvme0n1` is Windows. Address it by
-`UUID=`, never `/dev/nvme…`.
+The NVMe names are **not stable across boots**: root has been `nvme1n1p2` with
+Windows on `nvme0n1`, and on 2026-10-17 it was `nvme0n1p2` with Windows on
+`nvme1n1`. Check `lsblk` every time, and address disks by `UUID=`, never `/dev/nvme…`.
 
 ### swaync/actions.sh is the shared action entry point
 
@@ -144,6 +145,20 @@ The log rotates **in place**: a `mv` would strand the recording supervisor on a 
 (`toggle`; the swaync Clipboard button uses `clip open`). They fall back to the rofi picker
 **only** when the panel does not answer `ping`. If it answers but the call fails, they log and notify
 instead, so there are never two UIs. This is the same rule as `capture-open`.
+
+### swaync is a locally patched build
+
+[`pkgbuilds/swaync/`](pkgbuilds/swaync/) is Arch's 0.12.6 PKGBUILD plus two crash fixes, at
+pkgrel `1.1`. Build and install it with `makepkg -sri` after `bootstrap.sh packages`:
+- `0001`: upstream PR #767. A `CloseNotification` that arrives before the reveal idle runs
+  segfaults in `gtk_revealer_set_reveal_child`.
+- `0002`: a local fix. `PulseDaemon` removed `volume_operations` nodes inside a Gee `foreach`,
+  which segfaults in `gee_linked_list_real_foreach` when a sink changes after the volume slider
+  has been used.
+
+Any newer Arch swaync package, even a pkgrel bump, replaces this build and brings both crashes
+back. `pacman -Q swaync` must end in `-1.1`. Drop the directory once an upstream release has
+both fixes.
 
 ### The clipboard panel (Quickshell)
 

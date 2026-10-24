@@ -3,7 +3,6 @@ zsh
 zsh-syntax-highlighting   # sourced at the end of .zshrc
 eza                       # alias ls
 zoxide                    # alias cd
-thefuck                   # lazy-loaded `fuck` function
 fastfetch                 # alias btw   (neofetch is archived upstream)
 nvm                       # lazy-loaded node/npm/npx
 bun

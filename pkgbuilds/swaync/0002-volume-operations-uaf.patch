@@ -1,0 +1,123 @@
+From 3ef7e6a4f96a57cde88984dd2f93e9737e6170bd Mon Sep 17 00:00:00 2001
+From: Tyler <code@tyler-void.dev>
+Date: Sat, 17 Oct 2026 12:58:37 +0700
+Subject: [PATCH] volume: stop removing Gee list nodes from inside foreach
+
+PulseDaemon removed finished/cancelled Operations from volume_operations
+inside LinkedList.foreach. Gee frees the node the loop is standing on,
+so the next step reads freed memory: swaync segfaults in
+gee_linked_list_real_foreach from get_sink_info, typically when a sink
+changes after the volume slider was used. Prune through the iterator and
+clear() after cancelling instead.
+---
+ .../widgets/volume/pulseDaemon.vala           | 59 ++++++++-----------
+ 1 file changed, 25 insertions(+), 34 deletions(-)
+
+diff --git a/src/controlCenter/widgets/volume/pulseDaemon.vala b/src/controlCenter/widgets/volume/pulseDaemon.vala
+index d8574ff..a2e57de 100644
+--- a/src/controlCenter/widgets/volume/pulseDaemon.vala
++++ b/src/controlCenter/widgets/volume/pulseDaemon.vala
+@@ -245,12 +245,7 @@ namespace SwayNotificationCenter.Widgets {
+             sink_input.channel_map = info.channel_map;
+             sink_input.balance = sink_input.cvolume
+                  .get_balance (sink_input.channel_map);
+-            sink_input.volume_operations.foreach ((op) => {
+-                if (op.get_state () != Operation.State.RUNNING) {
+-                    sink_input.volume_operations.remove (op);
+-                }
+-                return Source.CONTINUE;
+-            });
++            prune_volume_operations (sink_input.volume_operations);
+             if (sink_input.volume_operations.is_empty) {
+                 sink_input.volume = volume_to_double (
+                     sink_input.cvolume.max ());
+@@ -398,12 +393,7 @@ namespace SwayNotificationCenter.Widgets {
+                         device.channel_map = info.channel_map;
+                         device.balance = device.cvolume
+                              .get_balance (device.channel_map);
+-                        device.volume_operations.foreach ((op) => {
+-                            if (op.get_state () != Operation.State.RUNNING) {
+-                                device.volume_operations.remove (op);
+-                            }
+-                            return Source.CONTINUE;
+-                        });
++                        prune_volume_operations (device.volume_operations);
+                         if (device.volume_operations.is_empty) {
+                             device.volume = volume_to_double (
+                                 device.cvolume.max ());
+@@ -452,12 +442,7 @@ namespace SwayNotificationCenter.Widgets {
+             device.channel_map = info.channel_map;
+             device.balance = device.cvolume
+                  .get_balance (device.channel_map);
+-            device.volume_operations.foreach ((op) => {
+-                if (op.get_state () != Operation.State.RUNNING) {
+-                    device.volume_operations.remove (op);
+-                }
+-                return Source.CONTINUE;
+-            });
++            prune_volume_operations (device.volume_operations);
+             if (device.volume_operations.is_empty) {
+                 device.volume = volume_to_double (
+                     device.cvolume.max ());
+@@ -479,14 +464,7 @@ namespace SwayNotificationCenter.Widgets {
+          * Setters
+          */
+         public void set_sink_input_volume (PulseSinkInput sink_input, double volume) {
+-            sink_input.volume_operations.foreach ((operation) => {
+-                if (operation.get_state () == Operation.State.RUNNING) {
+-                    operation.cancel ();
+-                }
+-
+-                sink_input.volume_operations.remove (operation);
+-                return GLib.Source.CONTINUE;
+-            });
++            cancel_volume_operations (sink_input.volume_operations);
+ 
+             var cvol = sink_input.cvolume;
+             cvol.scale (double_to_volume (volume));
+@@ -499,14 +477,7 @@ namespace SwayNotificationCenter.Widgets {
+         }
+ 
+         public void set_device_volume (PulseDevice device, double volume) {
+-            device.volume_operations.foreach ((operation) => {
+-                if (operation.get_state () == Operation.State.RUNNING) {
+-                    operation.cancel ();
+-                }
+-
+-                device.volume_operations.remove (operation);
+-                return GLib.Source.CONTINUE;
+-            });
++            cancel_volume_operations (device.volume_operations);
+ 
+             var cvol = device.cvolume;
+             cvol.scale (double_to_volume (volume));
+@@ -660,6 +631,26 @@ namespace SwayNotificationCenter.Widgets {
+          * Volume utils
+          */
+ 
++        // Gee's foreach frees the node it is standing on if the callback
++        // removes it, so removal has to go through the iterator.
++        private static void prune_volume_operations (LinkedList<Operation> operations) {
++            var iter = operations.iterator ();
++            while (iter.next ()) {
++                if (iter.get ().get_state () != Operation.State.RUNNING) {
++                    iter.remove ();
++                }
++            }
++        }
++
++        private static void cancel_volume_operations (LinkedList<Operation> operations) {
++            foreach (Operation operation in operations) {
++                if (operation.get_state () == Operation.State.RUNNING) {
++                    operation.cancel ();
++                }
++            }
++            operations.clear ();
++        }
++
+         private static double volume_to_double (PulseAudio.Volume vol) {
+             double tmp = (double) (vol - PulseAudio.Volume.MUTED);
+             return 100 * tmp / (double) (PulseAudio.Volume.NORM - PulseAudio.Volume.MUTED);
+-- 
+2.56.0
+
