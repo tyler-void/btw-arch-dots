@@ -58,9 +58,10 @@ The 2222 key lives in `data/ssh/` and changes if that folder is lost (see Backup
 
 - Clone public repos over HTTPS from anywhere: `git clone https://git.tyler-void.dev/tyler/<repo>.git`
 - Push over SSH, on the tailnet: `git remote add origin ssh://git@msi-server.tail5cea38.ts.net:2222/tyler/<repo>.git`
-- **Large pushes (initial imports, big binaries): use SSH.** Cloudflare's free plan rejects request bodies
-  over about 100 MB, so a large HTTPS push through the tunnel fails with HTTP 413. SSH goes over Tailscale
-  and has no such limit.
+- **Anything large (pushes, API uploads): use the tailnet, not the public URL.** Uploads *into* the
+  server through the tunnel crawl at ~0.1–1 Mbit/s on this ISP. Cloudflare also cuts requests at
+  100 s (524) and rejects bodies over about 100 MB (413). Downloads through the tunnel are fine. The
+  measurements are in `docs/forgejo.md` (Upload performance).
 - If HTTPS git ever starts getting HTML challenge pages instead of git data, a Cloudflare security
   feature (Bot Fight Mode / a challenge rule) is catching git clients. Add a WAF skip rule for
   `git.tyler-void.dev` rather than turning protection off for the whole zone.

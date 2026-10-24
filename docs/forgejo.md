@@ -146,6 +146,38 @@ On a fresh Arch box with Docker, Tailscale and the user in the `docker` group:
    ```
 8. **Save off the box once:** `data/ssh` (the git host keys, which aren't in any dump) and `forgejo.env`.
 
+## Upload performance: the tunnel is slow inbound (measured 2026-10-24)
+
+The same Contents API upload (`POST /api/v1/repos/<owner>/<repo>/contents`, base64 JSON) was timed
+two ways from msi-server: straight to the container, and out through `https://git.tyler-void.dev`
+and back in through the tunnel.
+
+| Payload (on the wire) | Direct to Forgejo | Tunnel, QUIC | Tunnel, HTTP/2 |
+|---|---|---|---|
+| 5 MB (6.7 MB) | 0.6 s | failed (no response, 40 s) | failed (no response, 149 s) |
+| 20 MB (26.7 MB) | 1.8 s | 125 s → Cloudflare 524 | 188 s → 524 |
+| 50 MB (66.7 MB) | 4.3 s | 113 s | failed (no response, 125 s) |
+
+- **Forgejo is not the bottleneck.** Even at 15 W it processes 50 MB in 4.3 s.
+- **The internet line is not the bottleneck either.** Plain HTTPS with Cloudflare does 153 Mbit/s up
+  and 215 Mbit/s down. Downloads *out* through the tunnel do ~120 Mbit/s (50 MB in 3.5 s).
+- **Uploads *into* the server through the tunnel crawl at ~0.1–1 Mbit/s** on both QUIC and HTTP/2.
+  The route from Cloudflare's tunnel edge (SIN, 198.41.x) down to this ISP is the problem, and no
+  cloudflared setting fixes a route. There is no public IPv6 here to try another path.
+- **Cloudflare also cuts any request off at 100 s** (HTTP 524), whatever Forgejo is doing.
+
+Rules that follow:
+
+- **Big uploads must not go through the tunnel.** Use git over SSH on Tailscale (`:2222`). For HTTP
+  API clients, use an endpoint on the tailnet. The laptop reaches msi-server over Tailscale directly on
+  the LAN at ~345 Mbit/s.
+- **A client on the home network that uses the public URL hairpins.** Its upload goes out to Cloudflare
+  in Singapore and back down the same line, through the slow leg.
+- **Forgejo has no Git Data write API.** `POST git/blobs` answers 405, `git/trees` and `git/commits`
+  404. A GitHub-style blobs → tree → commit uploader can't work. Batch with `POST /contents`
+  (`ChangeFiles`, many files in one commit) instead. An existing path needs `operation: update` plus
+  its `sha`; `create` on it fails with 422/409.
+
 ## Things that bit during the build
 
 - **`forgejo dump` aborts when `/data/git/repositories` doesn't exist**, and Forgejo creates that folder

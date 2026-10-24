@@ -37,7 +37,7 @@ services:
     networks: [forgejo]
 
   cloudflared:
-    image: cloudflare/cloudflared:2026.10.1
+    image: cloudflare/cloudflared:2026.10.3
     container_name: forgejo-cloudflared
     restart: unless-stopped
     command: tunnel --no-autoupdate run
