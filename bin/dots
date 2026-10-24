@@ -250,12 +250,15 @@ cmd_adopt() {
   local live mode=${2:-link} rel path
   live="$(readlink -m -- "$1")"
   [[ -e $live ]] || die "no such file: $1"
+  # a `link` entry resolves into the repo; adopting that would track the repo's own copy
+  [[ $live == "$REPO"/* ]] && die "already tracked: $1 is a link into the repo"
   case "$live" in
     "$HOME"/*) rel="${live#"$HOME"/}"; path="home/$rel" ;;
     /etc/*)    path="system${live}"; mode=root ;;
     *) die "can only adopt paths under \$HOME or /etc" ;;
   esac
-  grep -qE "^[[:space:]]*[a-z]+[[:space:]]+${path//\//\\/}[[:space:]]*$" "$MANIFEST" \
+  # an exact match on the path field (a regex would need every metacharacter escaped)
+  awk -v p="$path" '$1 !~ /^#/ && $2 == p { found = 1 } END { exit !found }' "$MANIFEST" \
     && die "already in the manifest: $path"
 
   mkdir -p -- "$REPO/$(dirname -- "$path")"

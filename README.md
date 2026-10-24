@@ -14,6 +14,39 @@ dots doctor      # is the session, GPU, audio and theming wiring actually sane
 
 ---
 
+## Showcase
+
+![kitty with fastfetch, btop and nvim, tiled over the wallpaper on a 34-inch ultrawide](docs/showcase/terminals.webp)
+
+It started with Archcraft's Wayfire video. I loved it, but I didn't want to pay for a dotfiles
+pack, so I stayed on GNOME. I've been on Wayfire for almost two years now, and I built everything
+here myself: the compositor from my own fork, the rofi menus, the notification centre, and a
+screenshot overlay, recording island and clipboard panel in Quickshell, all in one theme
+([Enhalation](docs/enhalation-desktop.md)).
+
+| | |
+|:-:|:-:|
+| ![the rofi launcher](docs/showcase/launcher.webp) | ![the screenshot overlay](docs/showcase/capture.webp) |
+| **Launcher** — Super+Enter | **Screenshot overlay** — PrtSc: freeze, select, capture |
+| ![the clipboard panel](docs/showcase/clipboard.webp) | ![the bare desktop](docs/showcase/desktop.webp) |
+| **Clipboard panel** — Super+V | **The desktop** |
+
+<p align="center">
+  <img src="docs/showcase/island-pill.webp" alt="the recording island, collapsed" height="56">
+  <img src="docs/showcase/island-recording.webp" alt="the recording island, expanded" height="172">
+  <img src="docs/showcase/island-saved.webp" alt="the recording island after a save" height="172">
+</p>
+<p align="center">
+  <img src="docs/showcase/control-centre.webp" alt="the swaync control centre" height="300">
+  <img src="docs/showcase/notification.webp" alt="a notification" height="130">
+</p>
+
+Wallpaper: the cover of *余波* (*Nagori*), the art collection by Akiakane (秋赤音). It is in the
+repo (`home/Pictures/Wallpapers/girl.png`) so the desktop is reproducible; the artwork's rights
+are the artist's.
+
+---
+
 ## How deployment works
 
 Two mechanisms, chosen per file in [`dots.conf`](dots.conf):
