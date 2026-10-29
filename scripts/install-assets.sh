@@ -84,7 +84,7 @@ done
 # The fonts repo has its own CLI; `fonts install` links each family into
 # ~/.local/share/fonts, backing up whatever was there.
 FONTS_REPO="${FONTS_REPO:-$HOME/Documents/Projects/cartograph-fonts}"
-FONTS_URL="${FONTS_URL:-ssh://git@msi-server.tail5cea38.ts.net:2222/tyler/cartograph-fonts.git}"
+FONTS_URL="${FONTS_URL:-ssh://git@msi-server.tail2571f1.ts.net:2222/tyler/cartograph-fonts.git}"
 step "personal fonts: $FONTS_REPO"
 if [[ ! -d $FONTS_REPO/.git ]]; then
   if git clone --quiet "$FONTS_URL" "$FONTS_REPO"; then
