@@ -73,6 +73,15 @@ kept installed at the moment; removing them is the tidier end state but is left
 as your call since `wayfire-plugins-extra` depends on `wayfire` and pacman will
 want to take both.
 
+The same trap has a second half: the linker path. Arch does not search
+`/usr/local/lib` by default, so without `/etc/ld.so.conf.d/usr-local.conf` the
+source-built binary loads `libwf-config` and `libwlroots` from `/usr/lib`, the
+packaged versions, and not the ones it was built against. It still starts, so
+nothing looks wrong. On a fresh machine (think-arch-think, 2026-10-29) that meant
+wf-config 0.11.0 under a 0.12.0 build. `build-wayfire.sh` now writes that file
+when it is missing, and its verify step checks with `ldd` where both libraries
+come from.
+
 The installed build used to be `buildtype=debug`, `-O0`. That is fine for
 bisecting a bug, but needlessly slow as a daily driver. `dots doctor` warns if the
 build tree is ever left on debug again.

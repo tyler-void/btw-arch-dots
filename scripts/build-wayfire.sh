@@ -105,6 +105,16 @@ ninja -C "$BUILD"
 if (( DO_INSTALL )); then
   step "install to /usr/local"
   sudo ninja -C "$BUILD" install
+
+  # /usr/local/lib is not in Arch's default linker path. Without this file the
+  # binary in /usr/local/bin silently loads libwf-config and libwlroots from
+  # /usr/lib instead: whatever the wayfire package pulled in, which is a
+  # different version from the one it was built against.
+  ldconf=/etc/ld.so.conf.d/usr-local.conf
+  if ! grep -qsx /usr/local/lib "$ldconf"; then
+    echo /usr/local/lib | sudo tee "$ldconf" >/dev/null
+    ok "added /usr/local/lib to the linker path ($ldconf)"
+  fi
   sudo ldconfig
   ok "installed"
 
@@ -119,6 +129,12 @@ if (( DO_INSTALL )); then
   step "verify"
   echo "  binary : $(command -v wayfire)"
   echo "  version: $(wayfire --version 2>&1 | head -1)"
+  libs=$(ldd /usr/local/bin/wayfire | awk '/libwlroots|libwf-config/ {print $3}')
+  if [[ -n $libs ]] && ! grep -qv '^/usr/local/lib/' <<<"$libs"; then
+    ok "wlroots and wf-config load from /usr/local/lib"
+  else
+    warn "wayfire loads libraries from outside /usr/local/lib: $(paste -sd' ' <<<"$libs")"
+  fi
   missing_plugins=()
   while read -r p; do
     [[ -e /usr/local/lib/wayfire/lib$p.so ]] || missing_plugins+=("$p")
