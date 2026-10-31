@@ -2,8 +2,8 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 
-// docs/capture-ui.md §2.1: one ShellRoot: CaptureOverlay (per screen) + RecIsland, and the
-// clipboard panel (docs/clipboard-ui.md).
+// docs/capture-ui.md §2.1: one ShellRoot: CaptureOverlay (per screen) + RecIsland, the
+// clipboard panel (docs/clipboard-ui.md), and the low-battery warnings (BatteryWatch.qml).
 ShellRoot {
     QtObject {
         id: cap
@@ -68,4 +68,6 @@ ShellRoot {
     RecIsland {}
 
     ClipPanel { capture: cap }                         // docs/clipboard-ui.md (K2: read-only)
+
+    BatteryWatch {}
 }

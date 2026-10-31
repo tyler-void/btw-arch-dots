@@ -184,6 +184,14 @@ thing that runs `cliphist` or `wl-copy` for it. The design is in
   - Before any destructive step, check `clipctl whereami` through the panel's `state()`.
   - Restart the normal instance afterwards.
 
+### Low-battery warnings (Quickshell)
+
+There is no bar, so `~/.config/quickshell/enhalation/BatteryWatch.qml` is the only battery indicator.
+It reads UPower (`percentage` is 0–1) and warns once per discharge: a sticky notification at 15 %,
+then a critical one at 5 % that replaces it (swaync's `critical-alert` script sounds it). It closes
+the warning when AC returns. `qs -c enhalation ipc call battery preview 1|2|0` shows a sample or
+closes it, and `battery state` prints the watcher's state.
+
 ### Theming: generated for the desktop surfaces, hand-kept everywhere else
 
 Three sets of themes are **generated** by `./scripts/gen-theme.py` from `theme/enhalation/`
