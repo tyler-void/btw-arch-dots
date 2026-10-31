@@ -1,0 +1,37 @@
+# markdown-resume on msi-server: https://resume.tyler-void.dev
+#
+# A static site and nothing else. Resumes live in the visitor's browser, never on the server.
+# No host port: the Forgejo stack's cloudflared reaches it on the forgejo_forgejo network
+# as http://markdown-resume:8080 (tunnel route resume.tyler-void.dev).
+name: markdown-resume
+
+services:
+  markdown-resume:
+    build:
+      context: .
+      args:
+        REF: master
+        SITE_URL: https://resume.tyler-void.dev
+    image: markdown-resume:local
+    container_name: markdown-resume
+    restart: unless-stopped
+    read_only: true
+    tmpfs:
+      - /tmp                       # nginx-unprivileged keeps its pid and temp files here
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    mem_limit: 128m
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://127.0.0.1:8080/"]
+      interval: 1m
+      timeout: 5s
+      retries: 3
+    logging:
+      driver: json-file
+      options: { max-size: 10m, max-file: "3" }
+    networks: [tunnel]
+
+networks:
+  tunnel:
+    external: true
+    name: forgejo_forgejo          # created by /srv/forgejo; cloudflared is on it
