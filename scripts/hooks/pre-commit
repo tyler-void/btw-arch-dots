@@ -3,25 +3,55 @@
 #
 # Blocks a commit only when it would record something WRONG:
 #
-#   - a copy-tracked file whose live version is newer. Committing then stores a
-#     snapshot you have already superseded on the machine — silent data loss.
+#   - a STAGED copy-tracked file whose live version is newer. Committing it
+#     stores a snapshot the machine has already superseded.
 #   - docs/keybindings.md out of step with wayfire.ini (it is generated).
 #   - a shell script that does not parse.
 #
-# It does NOT block on `root` entries where the repo is ahead of /etc: that is
+# It does NOT block on a stale copy-tracked file that is not staged: the commit
+# records nothing about it. EasyEffects bumps a preset usage counter in
+# easyeffectsrc on every preset load, which used to block every unrelated commit.
+# Those get a note instead.
+#
+# Nor does it block on `root` entries where the repo is ahead of /etc: that is
 # the normal state between editing a system file and running `dots push`.
 set -euo pipefail
 REPO="$(git rev-parse --show-toplevel)"
 fail=0
 
 status="$(NO_COLOR=1 "$REPO/bin/dots" status 2>&1 || true)"
+# Under `git commit -a` or `git commit <path>`, GIT_INDEX_FILE points at the
+# index being committed, so this sees those files as staged too.
+staged="$(git diff --cached --name-only --no-renames)"
 
-stale="$(printf '%s\n' "$status" | awk '$1=="DRIFT" && $2=="copy" && /live is newer/')"
-if [[ -n $stale ]]; then
-  echo "pre-commit: the machine has newer versions of these copy-tracked files:" >&2
-  printf '%s\n' "$stale" | sed 's/^/  /' >&2
+# A manifest entry may be a directory: staged if it or anything under it is.
+is_staged() {
+  local f
+  while IFS= read -r f; do
+    [[ $f == "$1" || $f == "$1"/* ]] && return 0
+  done <<<"$staged"
+  return 1
+}
+
+stale_staged="" stale_other=""
+while IFS= read -r row; do
+  [[ -n $row ]] || continue
+  read -r _ _ path _ <<<"$row"
+  if is_staged "$path"; then stale_staged+="$row"$'\n'
+  else                       stale_other+="$row"$'\n'; fi
+done < <(printf '%s\n' "$status" | awk '$1=="DRIFT" && $2=="copy" && /live is newer/')
+
+if [[ -n $stale_staged ]]; then
+  echo "pre-commit: these staged copy-tracked files have newer versions on the machine:" >&2
+  printf '%s' "$stale_staged" | sed 's/^/  /' >&2
   echo "  committing now would store a stale snapshot. Run:  dots pull" >&2
   fail=1
+fi
+
+if [[ -n $stale_other ]]; then
+  echo "pre-commit: note — the machine has newer versions of these copy-tracked files:" >&2
+  printf '%s' "$stale_other" | sed 's/^/  /' >&2
+  echo "  (not staged, so not blocking; snapshot them with: dots pull)" >&2
 fi
 
 pending="$(printf '%s\n' "$status" | awk '$1=="DRIFT" && $2=="root"')"
