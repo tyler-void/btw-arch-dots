@@ -1,4 +1,4 @@
-# kanshi — output profiles. Autostarted from wayfire.ini; <super>C / <super>A
+# kanshi — output profiles (code, train, hdmi-only, laptop). Autostarted from wayfire.ini; <super>C / <super>A
 # run `kanshictl switch code|train`.
 #
 #   eDP-1     laptop panel                     Intel iGPU
@@ -15,6 +15,11 @@
 
 # Docked, G5 only.  <super>C
 profile code {
+	# 165 Hz (the panel's preferred mode). 100 Hz was tried on 2026-10-31 and felt WORSE:
+	# the compositor's ~11.5 ms total per-frame cost exceeds the budget at both rates, and
+	# when a frame misses, it waits a whole refresh interval -- so 165 Hz lands the late
+	# frame at ~82 Hz effective while 100 Hz lands it at ~50 Hz. Higher refresh degrades
+	# MORE gracefully here. The real lever is the paint cost, not the refresh rate.
 	output DP-3 enable mode preferred position 0,0
 	output eDP-1 disable
 	output HDMI-A-1 disable
@@ -24,6 +29,15 @@ profile code {
 profile train {
 	output eDP-1 enable position 0,0
 	output DP-3 disable
+	output HDMI-A-1 disable
+}
+
+# Docked, but the G5 answers only on HDMI (DP cable out, or the G5 on its HDMI input).
+# No other profile matches eDP-1 + HDMI-A-1, so before this one kanshi changed nothing
+# and the panel stayed off from `code`: no picture at all (2026-10-31). HDMI-A-1 stays
+# off as everywhere else.
+profile hdmi-only {
+	output eDP-1 enable position 0,0
 	output HDMI-A-1 disable
 }
 

@@ -94,7 +94,9 @@ keybinding. It does **not** own the output layout — kanshi does.
 Two things that bite:
 
 - **Outputs belong to kanshi** (`~/.config/kanshi/config`: profiles `code`,
-  `train`, `laptop`). `<super>C` / `<super>A` run `kanshictl switch`.
+  `train`, `hdmi-only`, `laptop`). `<super>C` / `<super>A` run `kanshictl switch`.
+  Every combination of connected outputs needs a profile. When nothing matches, kanshi
+  changes nothing, and a panel turned off by the previous profile stays off.
   `[workarounds] use_external_output_configuration = true` stops a save of
   `wayfire.ini` from re-applying `[output:*]` over the active profile. The only
   output section is `HDMI-A-1` pinned off. **Never put `mode = off` on `eDP-1` or
